@@ -9,6 +9,7 @@ struct Violation {
     string time;
     string location;
     string type;
+    string plate;
     Violation* next;
 };
 
@@ -21,14 +22,19 @@ void displayViolation(Violation* v) {
 
 void logViolation() {
     Violation* newViolation = new Violation;
-    cout << "Enter Date: "; cin >> newViolation->date;
-    cout << "Enter Time: "; cin >> newViolation->time;
-    cout << "Enter Location: "; cin >> newViolation->location;
+    cout << "Enter Plate number: "; 
+    cin >> newViolation -> plate;
+    cout << "Enter Date: "; 
+    cin >> newViolation->date;
+    cout << "Enter Time: "; 
+    cin >> newViolation->time;
+    cout << "Enter Location: "; 
+    cin >> newViolation->location;
     cout << "Enter Type: "; getline(cin >> ws, newViolation->type);
 
     if (!head) {
         head = newViolation;
-        head->next = head; // circular?? idk bruh i think singly rani
+        head->next = head; // circular?? idk bruh i think singly rani yeah singly rani
     } else {
         Violation* temp = head;
         while (temp->next != head) temp = temp->next;
@@ -67,6 +73,17 @@ void filterViolationsByDateRange(const string& startDate, const string& endDate)
     } while (current != head);
 }
 
+void filterPlate(const string& targetPlate){
+    if(!head){
+        return
+    }
+    Violation *current = head;
+    do {
+        if (current->plate == targetPlate) displayViolation(current);
+        current = current->next;
+    } while (current != head);
+
+}
 void searchViolation(const string& keyword) {
     if (!head) return;
     Violation* current = head;
@@ -150,7 +167,7 @@ void loadFromFile(const string& filename) {
 // Main Menu
 void mainMenu() {
     int choice;
-    string keyword, type, location, startDate, endDate, filename;
+    string keyword, type, location, startDate, endDate, filename, plate;
 
     do {
         cout << "\n--- TrafficEye Main Menu ---\n";
@@ -164,14 +181,15 @@ void mainMenu() {
             case 2: cout << "Enter keyword: "; getline(cin >> ws, keyword); searchViolation(keyword); break;
             case 3: cout << "Enter type: "; getline(cin >> ws, type); filterViolationsByType(type); break;
             case 4: cout << "Enter location: "; getline(cin >> ws, location); filterViolationsByLocation(location); break;
-            case 5:
+            case 5: cout << "Enter platenumber: "; getline(cin >> ws, plate); filterPlate(plate);break;
+            case 6:
                 cout << "Enter start date: "; cin >> startDate;
                 cout << "Enter end date: "; cin >> endDate;
                 filterViolationsByDateRange(startDate, endDate);
                 break;
-            case 6: summaryReport(); break;
-            case 7: cout << "Enter filename: "; cin >> filename; saveToFile(filename); break;
-            case 8: cout << "Enter filename: "; cin >> filename; loadFromFile(filename); break;
+            case 7: summaryReport(); break;
+            case 8: cout << "Enter filename: "; cin >> filename; saveToFile(filename); break;
+            case 9: cout << "Enter filename: "; cin >> filename; loadFromFile(filename); break;
         }
     } while (choice != 9);
 

@@ -72,10 +72,10 @@ void filterViolationsByDateRange(const string& startDate, const string& endDate)
         current = current->next;
     } while (current != head);
 }
-
+//need to add this on the file manip part 
 void filterPlate(const string& targetPlate){
     if(!head){
-        return
+        return;
     }
     Violation *current = head;
     do {

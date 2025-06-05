@@ -3,6 +3,7 @@
 #pragma hdrstop
 #include "Unit1.h"
 #include "Unit2.h"
+#include "Unit5.h"
 #include "Unit3.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -34,15 +35,27 @@ void __fastcall TmainMenu::logButtonClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TmainMenu::searchButtonClick(TObject *Sender)
+void __fastcall TmainMenu::loadButtonClick(TObject *Sender)
 {
-ShowMessage("Search Button Clicked!");
-if(!Form2)  {
-	Form2 = new TForm2(this);
-}
-this->Hide();
-Form2->Show();
+ShowMessage("Display Button Clicked!") ;
+	 if (!Form5) {
+		Form5 = new TForm5(this);
+	}
+	this->Hide();
+	Form5->Show();
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TmainMenu::searchButtonClick(TObject *Sender)
+{
+ShowMessage("Search Button Clicked!") ;
+	 if (!Form2) {
+		Form2 = new TForm2(this);
+	}
+	this->Hide();
+	Form2->Show();
+}
+//---------------------------------------------------------------------------
+
 
 

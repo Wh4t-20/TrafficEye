@@ -1,0 +1,67 @@
+//---------------------------------------------------------------------------
+#include <vcl.h>
+#pragma hdrstop
+#include "Unit1.h"
+#include "Unit3.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TForm3 *Form3;
+//---------------------------------------------------------------------------
+__fastcall TForm3::TForm3(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm3::Button1Click(TObject *Sender)
+{
+this->Hide();
+mainMenu->Show();
+verifyLabel->Hide();
+editButton->Hide();
+saveButton->Hide();
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm3::addButtonClick(TObject *Sender)
+{
+	static int clickCount = 0;
+	if (clickCount != 4) {
+		verifyLabel->Hide();
+		editButton->Hide();
+		saveButton->Hide();
+	}
+	clickCount++;
+	switch(clickCount) {
+	case 1:
+		promptLabel->Caption = "Enter Date:";
+		formatLabel->Caption = "MM/DD/YYYY";
+		break;
+	case 2:
+		promptLabel->Caption = "Enter Time:";
+		formatLabel->Caption = "HH:MM (24 Hour Format)";
+		break;
+	case 3:
+		promptLabel->Caption = "Enter Location:";
+		formatLabel->Caption = "";
+		break;
+	case 4:
+		promptLabel->Caption = "Enter Violation Type:";
+		formatLabel->Caption = "";
+		break;
+	default:
+		promptLabel->Caption = "All done!";
+		clickCount = 0;
+		break;
+}
+	String inputText = inputBox->Text;
+	listBox->Items->Add(inputText);
+	inputBox->Text = "";
+}
+//---------------------------------------------------------------------------
+
+
+
+
+

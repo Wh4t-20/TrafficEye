@@ -87,7 +87,7 @@
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\release\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
         <ProjectType>CppVCLApplication</ProjectType>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
-        <AllPackageLibs>rtl.lib;vcl.lib;vclimg.lib</AllPackageLibs>
+        <AllPackageLibs>rtl.lib;vcl.lib;vclimg.lib;dbrtl.lib;FireDAC.lib;FireDACCommonDriver.lib;FireDACCommon.lib;xmlrtl.lib;vclFireDAC.lib;vcldb.lib;vclwinx.lib;bindengine.lib;vclx.lib;FireDACSqliteDriver.lib</AllPackageLibs>
         <_TCHARMapping>wchar_t</_TCHARMapping>
         <Multithreaded>true</Multithreaded>
         <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
@@ -162,7 +162,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64x)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <LinkPackageImports>rtl.bpi;vcl.bpi;vclimg.bpi</LinkPackageImports>
+        <LinkPackageImports>rtl.bpi;vcl.bpi;vclimg.bpi;dbrtl.bpi;FireDAC.bpi;FireDACCommonDriver.bpi;FireDACCommon.bpi;xmlrtl.bpi;vclFireDAC.bpi;vcldb.bpi;vclwinx.bpi;bindengine.bpi;vclx.bpi;FireDACSqliteDriver.bpi</LinkPackageImports>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <Defines>NDEBUG;$(Defines)</Defines>
@@ -192,14 +192,35 @@
             <DependentOn>Unit1.h</DependentOn>
             <BuildOrder>2</BuildOrder>
         </CppCompile>
+        <CppCompile Include="Unit2.cpp">
+            <Form>Form2</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>Unit2.h</DependentOn>
+            <BuildOrder>4</BuildOrder>
+        </CppCompile>
         <CppCompile Include="Unit3.cpp">
             <Form>Form3</Form>
             <FormType>dfm</FormType>
             <DependentOn>Unit3.h</DependentOn>
             <BuildOrder>3</BuildOrder>
         </CppCompile>
+        <CppCompile Include="Unit4.cpp">
+            <Form>Form4</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>Unit4.h</DependentOn>
+            <BuildOrder>5</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="Unit5.cpp">
+            <Form>Form5</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>Unit5.h</DependentOn>
+            <BuildOrder>6</BuildOrder>
+        </CppCompile>
+        <FormResources Include="Unit2.dfm"/>
         <FormResources Include="Unit3.dfm"/>
+        <FormResources Include="Unit4.dfm"/>
         <FormResources Include="Unit1.dfm"/>
+        <FormResources Include="Unit5.dfm"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -253,6 +274,18 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Windows\UWP\cppreg_UwpDefault_150.png" Configuration="Debug" Class="UWP_CppLogo150">
+                    <Platform Name="Win64x">
+                        <RemoteName>Logo150x150.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Windows\UWP\cppreg_UwpDefault_44.png" Configuration="Debug" Class="UWP_CppLogo44">
+                    <Platform Name="Win64x">
+                        <RemoteName>Logo44x44.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile Condition="'$(UsingDelphiRTL)'=='true'" LocalName="$(BDS)\bin\borlndmm.dll" Class="DependencyModule">
                     <Platform Name="Win32">
                         <Overwrite>true</Overwrite>
@@ -275,6 +308,11 @@
                 </DeployFile>
                 <DeployFile Condition="'$(DynamicRTL)'=='true' And '$(Multithreaded)'=='true'" LocalName="$(BDS)\bin\cc32c290mt.dll" Class="DependencyModule">
                     <Platform Name="Win32">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName=".\Win64x\Debug\AppxManifest.xml" Configuration="Debug" Class="ProjectUWPManifest">
+                    <Platform Name="Win64x">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

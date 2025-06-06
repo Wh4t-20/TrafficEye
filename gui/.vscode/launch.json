@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/Lenovo/Documents/FIRST YR. - SEM 2/trafficeye",
-      "program": "c:/Users/Lenovo/Documents/FIRST YR. - SEM 2/trafficeye/build/Debug/outDebug",
+      "cwd": "c:/Users/Lenovo/Documents/FIRST YR. - SEM 2/FINALS",
+      "program": "c:/Users/Lenovo/Documents/FIRST YR. - SEM 2/FINALS/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

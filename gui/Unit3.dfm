@@ -1605,7 +1605,7 @@ object Form3: TForm3
     Top = 24
     Width = 137
     Height = 33
-    Caption = 'Back To Main Menu'
+    Caption = 'Back'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -1668,5 +1668,24 @@ object Form3: TForm3
     ParentFont = False
     TabOrder = 5
     OnClick = editButtonClick
+  end
+  object FDConnection1: TFDConnection
+    Params.Strings = (
+      'Database=C:\Users\carl\Downloads\TrafficEyez\gui\trafficeye.db'
+      'DriverID=SQLite'
+      'LockingMode=Normal'
+      'Synchronous=Full')
+    LoginPrompt = False
+    Left = 656
+    Top = 248
+  end
+  object FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink
+    Left = 768
+    Top = 216
+  end
+  object FDQuery1: TFDQuery
+    Connection = FDConnection1
+    Left = 736
+    Top = 456
   end
 end

@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+	//---------------------------------------------------------------------------
 #ifndef Unit1H
 #define Unit1H
 //---------------------------------------------------------------------------
@@ -14,15 +14,15 @@
 class TmainMenu : public TForm
 {
 __published:	// IDE-managed Components
-	TImage *Image1;
 	TButton *logButton;
 	TButton *searchButton;
-	TButton *summaryButton;
-	TButton *saveButton;
 	TButton *loadButton;
 	TButton *exitButton;
+	TImage *Image1;
 	void __fastcall exitButtonClick(TObject *Sender);
 	void __fastcall logButtonClick(TObject *Sender);
+	void __fastcall searchButtonClick(TObject *Sender);
+	void __fastcall loadButtonClick(TObject *Sender);
 private:
    //	logPanel *logPanel;	// User declarations
 public:		// User declarations

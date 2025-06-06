@@ -12,8 +12,8 @@ object mainMenu: TmainMenu
   Font.Style = []
   TextHeight = 15
   object Image1: TImage
-    Left = 0
-    Top = -64
+    Left = 8
+    Top = -112
     Width = 832
     Height = 473
     Picture.Data = {
@@ -1558,14 +1558,14 @@ object mainMenu: TmainMenu
     Stretch = True
   end
   object logButton: TButton
-    Left = 184
-    Top = 352
-    Width = 105
-    Height = 41
+    Left = 248
+    Top = 328
+    Width = 137
+    Height = 49
     Caption = 'Log Violation'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -16
     Font.Name = 'Bell MT'
     Font.Style = []
     ParentFont = False
@@ -1573,74 +1573,48 @@ object mainMenu: TmainMenu
     OnClick = logButtonClick
   end
   object searchButton: TButton
-    Left = 368
-    Top = 352
-    Width = 105
-    Height = 41
+    Left = 448
+    Top = 328
+    Width = 137
+    Height = 49
     Caption = 'Search Violation'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -16
     Font.Name = 'Bell MT'
     Font.Style = []
     ParentFont = False
     TabOrder = 1
+    OnClick = searchButtonClick
   end
-  object summaryButton: TButton
-    Left = 544
-    Top = 352
-    Width = 105
-    Height = 41
-    Caption = 'Summary Report'
+  object loadButton: TButton
+    Left = 248
+    Top = 440
+    Width = 137
+    Height = 49
+    Caption = 'Display'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -16
     Font.Name = 'Bell MT'
     Font.Style = []
     ParentFont = False
     TabOrder = 2
+    OnClick = loadButtonClick
   end
-  object saveButton: TButton
-    Left = 272
-    Top = 424
-    Width = 105
-    Height = 41
-    Caption = 'Save To File'
+  object exitButton: TButton
+    Left = 448
+    Top = 440
+    Width = 137
+    Height = 49
+    Caption = 'Exit'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -16
     Font.Name = 'Bell MT'
     Font.Style = []
     ParentFont = False
     TabOrder = 3
-  end
-  object loadButton: TButton
-    Left = 464
-    Top = 424
-    Width = 105
-    Height = 41
-    Caption = 'Load From File'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
-    Font.Name = 'Bell MT'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 4
-  end
-  object exitButton: TButton
-    Left = 368
-    Top = 488
-    Width = 105
-    Height = 41
-    Caption = 'Exit'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
-    Font.Name = 'Bell MT'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 5
     OnClick = exitButtonClick
   end
 end

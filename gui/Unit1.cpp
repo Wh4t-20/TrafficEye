@@ -2,7 +2,10 @@
 #include <vcl.h>
 #pragma hdrstop
 #include "Unit1.h"
+#include "Unit2.h"
+#include "Unit5.h"
 #include "Unit3.h"
+#include "Unit4.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -24,12 +27,29 @@ void __fastcall TmainMenu::exitButtonClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TmainMenu::logButtonClick(TObject *Sender)
 {
-	ShowMessage("Log Button Clicked!") ;
-	 if (!Form3) {
-		Form3 = new TForm3(this);
-	}
+
 	this->Hide();
 	Form3->Show();
+}
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+
+void __fastcall TmainMenu::searchButtonClick(TObject *Sender)
+{
+
+	this->Hide();
+	Form2->Show();
+}
+//---------------------------------------------------------------------------
+
+
+
+void __fastcall TmainMenu::loadButtonClick(TObject *Sender)
+{
+
+	this->Hide();
+	Form5->Show();
 }
 //---------------------------------------------------------------------------
 

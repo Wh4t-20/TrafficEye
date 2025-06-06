@@ -8368,10 +8368,10 @@ object Form5: TForm5
     Top = 16
     Width = 137
     Height = 33
-    Caption = 'Back to Main Menu'
+    Caption = 'Back To Main Menu'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -15
     Font.Name = 'Bell MT'
     Font.Style = []
     ParentFont = False

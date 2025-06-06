@@ -31,7 +31,9 @@
 #include <FireDAC.Stan.Pool.hpp>
 #include <FireDAC.UI.Intf.hpp>
 #include <FireDAC.VCLUI.Wait.hpp>
+#include <Vcl.ExtCtrls.hpp>
 
+#include <Vcl.Imaging.pngimage.hpp>
 class TForm4 : public TForm
 {
 __published:
@@ -40,13 +42,15 @@ __published:
 	TFDQuery *FDQuery1;
 	TFDConnection *FDConnection1;
 	TDataSource *DataSource1;
+	TImage *Image2;
+	TLabel *Label1;
 
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall DBGrid1DrawColumnCell(TObject *Sender, const TRect &Rect, int DataCol, TColumn *Column, TGridDrawState State);
 
 private:
 public:
-	void SearchAndDisplay(const String& field, const String& value);
+	bool SearchAndDisplay(const String& field, const String& value);
 	__fastcall TForm4(TComponent* Owner);
 };
 

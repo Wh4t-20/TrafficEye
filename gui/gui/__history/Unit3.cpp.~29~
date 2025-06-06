@@ -1,0 +1,172 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+#include "Unit1.h"
+#include "Unit3.h"
+
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TForm3 *Form3;
+
+// Global flag to track if the user is editing
+bool isEditing = false;
+
+//---------------------------------------------------------------------------
+__fastcall TForm3::TForm3(TComponent* Owner)
+    : TForm(Owner)
+{
+    verifyLabel->Hide();
+    editButton->Hide();
+    saveButton->Hide();
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TForm3::Button1Click(TObject *Sender)
+{
+    this->Hide();
+    mainMenu->Show();
+}
+
+//---------------------------------------------------------------------------
+
+void __fastcall TForm3::addButtonClick(TObject *Sender)
+{
+    static int clickCount = 0;
+
+    if (!inputBox->Text.Trim().IsEmpty()) {
+        listBox->Items->Add(inputBox->Text);
+		inputBox->Text = "";
+	}
+
+    verifyLabel->Hide();
+    editButton->Hide();
+    saveButton->Hide();
+
+    clickCount++;
+    switch (clickCount) {
+        case 1:
+            promptLabel->Caption = "Enter Date:";
+            formatLabel->Caption = "MM/DD/YYYY";
+            break;
+        case 2:
+            promptLabel->Caption = "Enter Time:";
+            formatLabel->Caption = "HH:MM (24 Hour Format)";
+            break;
+        case 3:
+            promptLabel->Caption = "Enter Location:";
+            formatLabel->Caption = "";
+            break;
+        case 4:
+            promptLabel->Caption = "Enter Violation Type:";
+            formatLabel->Caption = "";
+            break;
+        default:
+            promptLabel->Caption = "All done!";
+            verifyLabel->Show();
+            editButton->Show();
+            saveButton->Show();
+            clickCount = 0;
+            break;
+    }
+
+	// **Only ask to save if the user was editing**
+    if (isEditing) {
+        if (MessageDlg("You've finished editing. Do you want to save the changes?", mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrYes) {
+            saveButtonClick(Sender); // Calls save function
+        }
+        isEditing = false; // Reset editing mode
+	}
+}
+
+//---------------------------------------------------------------------------
+
+void __fastcall TForm3::saveButtonClick(TObject *Sender)
+{
+    // Ask user for filename before saving
+    String userFilename;
+    if (!InputQuery("Save File", "Enter filename (without extension):", userFilename) || userFilename.Trim().IsEmpty()) {
+        ShowMessage("Filename cannot be empty.");
+        return;
+    }
+
+    // Append ".csv" extension
+    String filePath = userFilename + ".csv";
+
+    try {
+        // Create or open the file in append mode
+        TFileStream *fileStream;
+        if (FileExists(filePath)) {
+            fileStream = new TFileStream(filePath, fmOpenReadWrite | fmShareDenyWrite);
+            fileStream->Seek((__int64)0, soEnd);;
+        } else {
+            fileStream = new TFileStream(filePath, fmCreate);
+        }
+
+        TStringList *csvContent = new TStringList();
+        if (!FileExists(filePath)) {
+            csvContent->Add("Date,Time,Location,Violation Type"); // Add header for new files
+        }
+
+        // Process listBox items (groups of 4)
+        String currentRecord = "";
+        int fieldCount = 0;
+
+        for (int i = 0; i < listBox->Items->Count; i++) {
+            String item = listBox->Items->Strings[i];
+
+            if (fieldCount > 0) {
+                currentRecord += ",";
+            }
+
+            if (item.Pos(",") > 0) {
+                currentRecord += "\"" + item + "\""; // Handle commas in data
+            } else {
+                currentRecord += item;
+            }
+
+            fieldCount++;
+
+            if (fieldCount == 4) {
+                csvContent->Add(currentRecord);
+                currentRecord = "";
+                fieldCount = 0;
+            }
+        }
+
+        if (fieldCount > 0) {
+            csvContent->Add(currentRecord);
+        }
+
+        // Save to file in append mode
+        csvContent->SaveToFile(filePath);
+        ShowMessage("Data successfully appended to " + filePath);
+
+        // Cleanup
+        delete fileStream;
+        delete csvContent;
+    } catch (Exception &e) {
+        ShowMessage("Error saving file: " + e.Message);
+    }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm3::editButtonClick(TObject *Sender)
+{
+    if (listBox->ItemIndex >= 0) {
+		// Enable editing mode
+        isEditing = true;
+
+        // Get selected item and put it back in the input box for editing
+        inputBox->Text = listBox->Items->Strings[listBox->ItemIndex];
+
+		// Remove the selected item from the list
+        listBox->Items->Delete(listBox->ItemIndex);
+    } else {
+        ShowMessage("Please select an item to edit.");
+	}
+}
+
+//---------------------------------------------------------------------------
+

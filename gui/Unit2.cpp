@@ -14,7 +14,7 @@ TForm2 *Form2;
 __fastcall TForm2::TForm2(TComponent* Owner)
 	: TForm(Owner)
 {
-	// No need to create Form4 here if it's auto-created by the project
+	Image1->BringToFront();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::backButtonClick(TObject *Sender)
@@ -28,26 +28,23 @@ void __fastcall TForm2::backButtonClick(TObject *Sender)
 
 void __fastcall TForm2::searchViolationClick(TObject *Sender)
 {
-    String violation = InputBox(L"Search Violation", L"Enter violation keyword:", L"");
+	String violation = InputBox(L"Search Violation", L"Enter violation keyword:", L"");
 	if (!violation.IsEmpty()) {
-        if (Form4) { // Check if Form4 exists
-            // Convert violation input to uppercase for consistent searching
-			Form4->SearchAndDisplay(L"VIOLATION", violation.UpperCase());
-			Form4->Show(); // Show Form4 with the search results
-        } else {
-            ShowMessage(L"Search results form (Form4) not available.");
-        }
-    }
+		if (Form4 && Form4->SearchAndDisplay(L"VIOLATION", violation.UpperCase())) {
+			this->Hide();
+		}
+	}
 }
+
 
 //---------------------------------------------------------------------------
 
 void __fastcall TForm2::searchTimeClick(TObject *Sender)
 {
-    String time = InputBox("Enter Time", "Time (HH:MM:SS):", ""); // Changed prompt to HH:MM:SS for consistency
+	String time = InputBox("Enter Time", "Time (HH:MM):", "");
     if (!time.IsEmpty()) {
         Form4->SearchAndDisplay("TIME", time);
-        Form4->Show();
+		this->Hide();
     }
 }
 
@@ -58,7 +55,7 @@ void __fastcall TForm2::searchLocationClick(TObject *Sender)
     String location = InputBox("Enter Location", "Location:", "");
     if (!location.IsEmpty()) {
         Form4->SearchAndDisplay("LOCATION", location);
-        Form4->Show();
+		this->Hide();
     }
 }
 
@@ -69,7 +66,7 @@ void __fastcall TForm2::searchDateClick(TObject *Sender)
     String date = InputBox("Enter Date", "Date (MM/DD/YYYY):", ""); // Changed prompt to MM/DD/YYYY for consistency
     if (!date.IsEmpty()) {
         Form4->SearchAndDisplay("DATE", date);
-        Form4->Show();
+		this->Hide();
     }
 }
 
@@ -82,7 +79,7 @@ void __fastcall TForm2::searchPlateClick(TObject *Sender)
     if (!plate.IsEmpty())
     {
         Form4->SearchAndDisplay("PLATE", plate.UpperCase()); // plate.UpperCase() is a good idea!
-        Form4->Show();
+		this->Hide();
     }
 }
 //---------------------------------------------------------------------------

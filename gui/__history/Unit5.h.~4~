@@ -1,0 +1,67 @@
+//---------------------------------------------------------------------------
+
+#ifndef Unit5H
+#define Unit5H
+//---------------------------------------------------------------------------
+
+#include <System.Classes.hpp>
+#include <Vcl.Controls.hpp>
+#include <Vcl.StdCtrls.hpp>
+#include <Vcl.Forms.hpp>
+#include <Vcl.ExtCtrls.hpp>
+#include <Vcl.Imaging.pngimage.hpp>
+#include <Data.DB.hpp>
+#include <FireDAC.Comp.Client.hpp>
+#include <FireDAC.Comp.DataSet.hpp>
+#include <FireDAC.DApt.hpp>
+#include <FireDAC.DApt.Intf.hpp>
+#include <FireDAC.DatS.hpp>
+#include <FireDAC.Phys.hpp>
+#include <FireDAC.Phys.Intf.hpp>
+#include <FireDAC.Stan.Async.hpp>
+#include <FireDAC.Stan.Def.hpp>
+#include <FireDAC.Stan.Error.hpp>
+#include <FireDAC.Stan.Intf.hpp>
+#include <FireDAC.Stan.Option.hpp>
+#include <FireDAC.Stan.Param.hpp>
+#include <FireDAC.Stan.Pool.hpp>
+#include <FireDAC.UI.Intf.hpp>
+#include <FireDAC.VCLUI.Wait.hpp>
+#include <FireDAC.Phys.SQLite.hpp>
+#include <FireDAC.Phys.SQLiteDef.hpp>
+#include <FireDAC.Phys.SQLiteWrapper.Stat.hpp>
+#include <FireDAC.Stan.ExprFuncs.hpp>
+
+//---------------------------------------------------------------------------
+
+class TForm5 : public TForm
+{
+__published:	// IDE-managed Components
+	TImage *Image1;
+	TButton *Button1;
+	TPaintBox *locationChart;
+	TPaintBox *violationsChart;
+	TFDQuery *FDQuery1;
+	TFDConnection *FDConnection1;
+	TLabel *TotalLabel;
+	TLabel *Label1;
+
+	void __fastcall locationChartPaint(TObject *Sender);
+	void __fastcall violationsChartPaint(TObject *Sender);
+	void __fastcall Button1Click(TObject *Sender);
+	void __fastcall DataClick(TObject *Sender);
+	void __fastcall summaryClick(TObject *Sender);
+
+private:
+	void __fastcall FormShow(TObject *Sender);
+
+public:
+	__fastcall TForm5(TComponent* Owner);
+	void __fastcall LoadChartData();
+};
+
+//---------------------------------------------------------------------------
+extern PACKAGE TForm5 *Form5;
+//---------------------------------------------------------------------------
+#endif
+

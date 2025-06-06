@@ -14,6 +14,7 @@ TmainMenu *mainMenu;
 __fastcall TmainMenu::TmainMenu(TComponent* Owner)
 	: TForm(Owner)
 {
+Image1->BringToFront();
 }
 //---------------------------------------------------------------------------
 void __fastcall TmainMenu::exitButtonClick(TObject *Sender)

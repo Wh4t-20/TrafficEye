@@ -5,6 +5,7 @@
 
 #include "Unit1.h"
 #include "Unit4.h"
+#include "Unit2.h"
 
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -22,7 +23,7 @@ __fastcall TForm4::TForm4(TComponent* Owner)
 
 //---------------------------------------------------------------------------
 
-void __fastcall TForm4::SearchAndDisplay(const String& field, const String& value)
+bool __fastcall TForm4::SearchAndDisplay(const String& field, const String& value)
 {
 	if (!FDConnection1->Connected)
 		FDConnection1->Connected = true;
@@ -31,7 +32,7 @@ void __fastcall TForm4::SearchAndDisplay(const String& field, const String& valu
 		field != "DATE" && field != "LOCATION")
 	{
 		ShowMessage("Invalid search field.");
-		return;
+		return false;
 	}
 
 	try {
@@ -42,6 +43,11 @@ void __fastcall TForm4::SearchAndDisplay(const String& field, const String& valu
 
 		if (FDQuery1->IsEmpty()) {
 			ShowMessage("No results found for " + field + ": " + value);
+			return false;
+		}
+		else {
+			this->Show();
+			return true;
 		}
 	}
 	catch (const Exception& e) {
@@ -54,7 +60,7 @@ void __fastcall TForm4::SearchAndDisplay(const String& field, const String& valu
 void __fastcall TForm4::Button1Click(TObject *Sender)
 {
 	this->Hide();
-	mainMenu->Show();
+	Form2->Show();
 }
 
 //---------------------------------------------------------------------------
@@ -73,6 +79,8 @@ void __fastcall TForm4::DBGrid1DrawColumnCell(TObject *Sender, const TRect &Rect
 		DBGrid1->DefaultDrawColumnCell(Rect, DataCol, Column, State);
 	}
 }
+
+
 
 
 

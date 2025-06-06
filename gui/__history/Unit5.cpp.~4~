@@ -1,0 +1,271 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "Unit1.h"
+#include "Unit5.h"
+#include "Unit6.h"
+#include <algorithm>
+#include <cmath>
+
+//---------------------------------------------------------------------------
+
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+
+TForm5 *Form5;
+using namespace std;
+//---------------------------------------------------------------------------
+struct ChartEntry {
+	String label;
+	int count;
+};
+
+std::vector<ChartEntry> violationData;
+std::vector<ChartEntry> locationData;
+int totalViolations = 0;
+__fastcall TForm5::TForm5(TComponent* Owner) : TForm(Owner)
+{
+
+    LoadChartData();
+}
+
+
+void __fastcall TForm5::FormShow(TObject *Sender)
+{
+	LoadChartData();
+}
+// Additional debugging - add error handling to LoadChartData():
+void __fastcall TForm5::LoadChartData() {
+    try {
+        // Check database connection first
+        if (!FDConnection1->Connected) {
+            ShowMessage("Database not connected!");
+            return;
+        }
+
+        // Load Violation Summary - FIXED TABLE NAME
+        violationData.clear();
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT VIOLATION, COUNT(*) AS count FROM LOGVIOLATION GROUP BY VIOLATION ORDER BY count DESC LIMIT 5";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            violationData.push_back({
+                FDQuery1->FieldByName("VIOLATION")->AsString,
+                FDQuery1->FieldByName("count")->AsInteger
+            });
+            FDQuery1->Next();
+        }
+
+        // Load Location Summary - FIXED TABLE NAME
+        locationData.clear();
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT LOCATION, COUNT(*) AS count FROM LOGVIOLATION GROUP BY LOCATION ORDER BY count DESC LIMIT 5";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            locationData.push_back({
+                FDQuery1->FieldByName("LOCATION")->AsString,
+                FDQuery1->FieldByName("count")->AsInteger
+            });
+            FDQuery1->Next();
+        }
+
+        // Total Violations - FIXED TABLE NAME
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT COUNT(*) AS total FROM LOGVIOLATION";
+        FDQuery1->Open();
+        totalViolations = FDQuery1->FieldByName("total")->AsInteger;
+        TotalLabel->Caption = "Total Violations: " + IntToStr(totalViolations);
+
+        // Force redraw
+        locationChart->Invalidate();
+        violationsChart->Invalidate();
+
+
+
+    } catch (Exception &e) {
+        ShowMessage("Database error: " + e.Message);
+    }
+}
+
+
+
+//---------------------------------------------------------------------------
+
+void __fastcall TForm5::Button1Click(TObject *Sender)
+{
+	this->Hide();
+	mainMenu->Show();
+}
+
+//---------------------------------------------------------------------------
+
+
+
+
+void __fastcall TForm5::DataClick(TObject *Sender)
+{
+	this->Hide();
+	Form6->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm5::summaryClick(TObject *Sender)
+{
+	ShowMessage("You're already viewing the summary (chart) screen.");
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm5::locationChartPaint(TObject *Sender) {
+    TCanvas *canvas = locationChart->Canvas;
+    TRect clientRect = locationChart->ClientRect;
+
+    // Set background to light gray
+    canvas->Brush->Color = TColor(0xF0F0F0);  // Light gray background
+    canvas->FillRect(clientRect);
+
+    if (locationData.empty()) return;
+
+    // Chart margins and dimensions
+    int leftMargin = 80;
+    int rightMargin = 30;
+    int topMargin = 40;
+    int bottomMargin = 60;
+
+    int chartWidth = clientRect.Width() - leftMargin - rightMargin;
+    int chartHeight = clientRect.Height() - topMargin - bottomMargin;
+
+    // Find max count for scaling
+    int maxCount = 0;
+    for (auto &entry : locationData) {
+        if (entry.count > maxCount) maxCount = entry.count;
+    }
+
+    // Add some padding to max value for better visual
+    int scaledMax = ((maxCount / 10) + 1) * 10; // Round up to nearest 10
+
+    // Draw grid lines
+    canvas->Pen->Color = clWhite;
+    canvas->Pen->Width = 1;
+
+    // Horizontal grid lines (every 10 units)
+    for (int i = 0; i <= scaledMax; i += 10) {
+        int y = topMargin + chartHeight - (i * chartHeight / scaledMax);
+        canvas->MoveTo(leftMargin, y);
+        canvas->LineTo(leftMargin + chartWidth, y);
+
+        // Y-axis labels
+        canvas->Font->Color = clBlack;
+        canvas->Font->Size = 8;
+        canvas->Brush->Style = bsClear;
+        String label = IntToStr(i);
+        canvas->TextOut(leftMargin - 25, y - 6, label);
+    }
+
+    // Calculate bar dimensions
+    int barCount = locationData.size();
+    int barSpacing = chartWidth / (barCount * 2);  // Space between bars
+    int barWidth = (chartWidth - (barSpacing * (barCount + 1))) / barCount;
+
+    // Draw bars
+    for (size_t i = 0; i < locationData.size(); ++i) {
+        int barHeight = (locationData[i].count * chartHeight) / scaledMax;
+        int x = leftMargin + barSpacing + i * (barWidth + barSpacing);
+        int y = topMargin + chartHeight - barHeight;
+
+        // Draw bar with red color like in your image
+        canvas->Brush->Color = TColor(0x4040FF);  // Red color (BGR format)
+        canvas->Brush->Style = bsSolid;
+        canvas->Pen->Color = TColor(0x3030E0);    // Slightly darker red for border
+        canvas->Rectangle(x, y, x + barWidth, topMargin + chartHeight);
+
+        // Draw location labels at bottom (rotated would be ideal but complex in GDI)
+        canvas->Font->Color = clBlack;
+        canvas->Font->Size = 8;
+        canvas->Brush->Style = bsClear;
+
+        // Center the text under each bar
+        String locationText = locationData[i].label;
+        int textWidth = canvas->TextWidth(locationText);
+        int textX = x + (barWidth - textWidth) / 2;
+        canvas->TextOut(textX, topMargin + chartHeight + 10, locationText);
+
+        // Draw count value on top of bar
+        String countText = IntToStr(locationData[i].count);
+        int countWidth = canvas->TextWidth(countText);
+        int countX = x + (barWidth - countWidth) / 2;
+        canvas->TextOut(countX, y - 15, countText);
+    }
+
+    // Draw chart axes
+    canvas->Pen->Color = clBlack;
+    canvas->Pen->Width = 2;
+
+    // Y-axis
+    canvas->MoveTo(leftMargin, topMargin);
+    canvas->LineTo(leftMargin, topMargin + chartHeight);
+
+    // X-axis
+    canvas->MoveTo(leftMargin, topMargin + chartHeight);
+    canvas->LineTo(leftMargin + chartWidth, topMargin + chartHeight);
+
+    // Chart title
+    canvas->Font->Color = clBlack;
+    canvas->Font->Size = 10;
+    canvas->Font->Style = TFontStyles() << fsBold;
+    canvas->Brush->Style = bsClear;
+    String title = "Violations by Location";
+    int titleWidth = canvas->TextWidth(title);
+    canvas->TextOut((clientRect.Width() - titleWidth) / 2, 10, title);
+
+    // Y-axis label
+    canvas->Font->Size = 9;
+    canvas->Font->Style = TFontStyles();
+    canvas->TextOut(10, topMargin + chartHeight/2 - 20, "Count");
+
+    // X-axis label
+    canvas->TextOut(leftMargin + chartWidth/2 - 25, topMargin + chartHeight + 40, "Location");
+}
+
+void __fastcall TForm5::violationsChartPaint(TObject *Sender) {
+	TCanvas *canvas = violationsChart->Canvas;
+    canvas->Brush->Color = clWhite;
+	canvas->FillRect(violationsChart->ClientRect);
+
+    if (violationData.empty()) return;
+
+	int cx = violationsChart->Width / 2;
+	int cy = violationsChart->Height / 2;
+	int radius = min(cx, cy) - 10;
+
+    float total = 0;
+    for (auto &entry : violationData) total += entry.count;
+
+    float angleStart = 0;
+    TColor colors[] = {clRed, clBlue, clGreen, clFuchsia, clNavy};
+
+    for (int i = 0; i < violationData.size(); ++i) {
+        float sweep = (violationData[i].count / total) * 360.0;
+        canvas->Brush->Color = colors[i % 5];
+        canvas->Pie(cx - radius, cy - radius, cx + radius, cy + radius,
+            cx + radius * cos(DegToRad(angleStart)),
+            cy - radius * sin(DegToRad(angleStart)),
+            cx + radius * cos(DegToRad(angleStart + sweep)),
+            cy - radius * sin(DegToRad(angleStart + sweep)));
+        angleStart += sweep;
+    }
+}
+
+//---------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------
+
+

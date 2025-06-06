@@ -11,6 +11,7 @@
 TForm3 *Form3;
 
 bool isEditing = false;
+int editingFieldType = -1;  // bag o nako gi-add kay nay bug sa editing
 
 //---------------------------------------------------------------------------
 __fastcall TForm3::TForm3(TComponent* Owner)
@@ -113,7 +114,10 @@ void __fastcall TForm3::addButtonClick(TObject *Sender)
     bool isValid = true;
     String errorMessage = "";
 
-    switch (clickCount) {
+    // Use editingFieldType if editing, otherwise use clickCount
+    int fieldType = isEditing ? editingFieldType : clickCount;
+
+    switch (fieldType) {
 		case 0: // Plate Number
             if (!ValidatePlateNumber(inputText)) {
                 isValid = false;
@@ -145,7 +149,7 @@ void __fastcall TForm3::addButtonClick(TObject *Sender)
 		return;
 	}
 
-	if (clickCount == 0) {
+	if (fieldType == 0) {
 		inputText = inputText.UpperCase();
     }
     listBox->Items->Add(inputText);
@@ -154,6 +158,19 @@ void __fastcall TForm3::addButtonClick(TObject *Sender)
     verifyLabel->Hide();
     editButton->Hide();
     saveButton->Hide();
+
+    if (isEditing) {
+
+        isEditing = false;
+        editingFieldType = -1;
+        promptLabel->Caption = "Enter Plate Number:";
+        formatLabel->Caption = "LLL-DDDD";
+
+        if (MessageDlg("You've finished editing. Do you want to save the changes?", mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrYes) {
+			saveButtonClick(Sender);
+		}
+        return;
+    }
 
     clickCount++;
     switch (clickCount) {
@@ -180,13 +197,6 @@ void __fastcall TForm3::addButtonClick(TObject *Sender)
             saveButton->Show();
             clickCount = 0;
             break;
-    }
-
-    if (isEditing) {
-        if (MessageDlg("You've finished editing. Do you want to save the changes?", mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrYes) {
-			saveButtonClick(Sender);
-		}
-		isEditing = false;
     }
 }
 
@@ -222,7 +232,7 @@ void __fastcall TForm3::saveButtonClick(TObject *Sender)
             FDQuery1->ExecSQL();
         }
 
-        ShowMessage("Data successfully saved to the database.");
+        ShowMessage("Saved hehe.");
 
         listBox->Items->Clear();
         this->Hide();
@@ -246,8 +256,9 @@ void __fastcall TForm3::editButtonClick(TObject *Sender)
 		listBox->Items->Delete(listBox->ItemIndex);
 
 		int selectedIndex = listBox->ItemIndex;
-        int itemPosition = selectedIndex % 5;
-        switch (itemPosition) {
+		editingFieldType = selectedIndex % 5;
+
+        switch (editingFieldType) {
             case 0:
                 promptLabel->Caption = "Enter Plate Number:";
                 formatLabel->Caption = "LLL-DDDD";
@@ -275,5 +286,3 @@ void __fastcall TForm3::editButtonClick(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-
-

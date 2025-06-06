@@ -41,6 +41,7 @@ __published:	// IDE-managed Components
 	TButton *searchDate;
 	TButton *backButton;
 	TButton *searchPlate;
+	TImage *Image2;
 	void __fastcall backButtonClick(TObject *Sender);
 	void __fastcall searchViolationClick(TObject *Sender);
 	void __fastcall searchTimeClick(TObject *Sender);

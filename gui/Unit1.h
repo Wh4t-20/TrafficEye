@@ -19,6 +19,7 @@ __published:	// IDE-managed Components
 	TButton *loadButton;
 	TButton *exitButton;
 	TImage *Image1;
+	TImage *Image2;
 	void __fastcall exitButtonClick(TObject *Sender);
 	void __fastcall logButtonClick(TObject *Sender);
 	void __fastcall searchButtonClick(TObject *Sender);

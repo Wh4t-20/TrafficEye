@@ -47,6 +47,7 @@ __published:	// IDE-managed Components
 	TFDConnection *FDConnection1;
 	TFDPhysSQLiteDriverLink *FDPhysSQLiteDriverLink1;
 	TFDQuery *FDQuery1;
+	TImage *Image2;
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall addButtonClick(TObject *Sender);
 	void __fastcall saveButtonClick(TObject *Sender);

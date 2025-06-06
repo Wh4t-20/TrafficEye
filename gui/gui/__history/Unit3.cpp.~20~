@@ -1,0 +1,142 @@
+//---------------------------------------------------------------------------
+#include <vcl.h>
+#pragma hdrstop
+#include "Unit1.h"
+#include "Unit3.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TForm3 *Form3;
+//---------------------------------------------------------------------------
+__fastcall TForm3::TForm3(TComponent* Owner)
+	: TForm(Owner)
+{
+		verifyLabel->Hide();
+		editButton->Hide();
+		saveButton->Hide();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm3::Button1Click(TObject *Sender)
+{
+this->Hide();
+mainMenu->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm3::addButtonClick(TObject *Sender)
+{
+	static int clickCount = 0;
+	if (clickCount < 4) {
+		verifyLabel->Hide();
+		editButton->Hide();
+		saveButton->Hide();
+	}
+	clickCount++;
+	switch(clickCount) {
+	case 1:
+		promptLabel->Caption = "Enter Date:";
+		formatLabel->Caption = "MM/DD/YYYY";
+		break;
+	case 2:
+		promptLabel->Caption = "Enter Time:";
+		formatLabel->Caption = "HH:MM (24 Hour Format)";
+		break;
+	case 3:
+		promptLabel->Caption = "Enter Location:";
+		formatLabel->Caption = "";
+		break;
+	case 4:
+		promptLabel->Caption = "Enter Violation Type:";
+		formatLabel->Caption = "";
+		break;
+	default:
+		promptLabel->Caption = "All done!";
+		verifyLabel->Show();
+		editButton->Show();
+		saveButton->Show();
+		clickCount = 0;
+		break;
+}
+	String inputText = inputBox->Text;
+	listBox->Items->Add(inputText);
+	inputBox->Text = "";
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm3::saveButtonClick(TObject *Sender)
+{
+    String userFilename;
+    if (!InputQuery("Save File", "Enter filename (without extension):", userFilename) || userFilename.Trim().IsEmpty()) {
+        ShowMessage("Filename cannot be empty.");
+        return;
+    }
+
+
+	TSaveDialog *saveDialog = new TSaveDialog(this);
+	saveDialog->Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
+    saveDialog->DefaultExt = "csv";
+    saveDialog->FileName = userFilename + ".csv";
+
+    if (saveDialog->Execute()) {
+        try {
+
+			TStringList *csvContent = new TStringList();
+
+			String currentRecord = "";
+			int fieldCount = 0;
+
+            for (int i = 0; i < listBox->Items->Count; i++) {
+                String item = listBox->Items->Strings[i];
+
+                if (fieldCount > 0) {
+                    currentRecord += ",";
+                }
+
+                if (item.Pos(",") > 0) {
+                    currentRecord += "\"" + item + "\"";
+                } else {
+                    currentRecord += item;
+                }
+
+                fieldCount++;
+
+                if (fieldCount == 4) {
+                    csvContent->Add(currentRecord);
+                    currentRecord = "";
+                    fieldCount = 0;
+                }
+            }
+
+			if (fieldCount > 0) {
+                csvContent->Add(currentRecord);
+            }
+
+            csvContent->SaveToFile(saveDialog->FileName);
+            ShowMessage("Data saved successfully to " + saveDialog->FileName);
+
+            delete csvContent;
+        } catch (Exception &e) {
+            ShowMessage("Error saving file: " + e.Message);
+        }
+    }
+
+	delete saveDialog;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm3::editButtonClick(TObject *Sender)
+{
+	if (listBox->ItemIndex >= 0) {
+
+		inputBox->Text = listBox->Items->Strings[listBox->ItemIndex];
+
+		listBox->Items->Delete(listBox->ItemIndex);
+        if (MessageDlg("Edit complete! Do you want to save the changes?", mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrYes) {
+			saveButtonClick(Sender);
+		}
+
+	} else {
+		ShowMessage("Please select an item to edit.");
+	}
+}
+//---------------------------------------------------------------------------
+
